@@ -1,0 +1,9 @@
+*
+!*/
+
+!bash/**
+!omf/**
+!nvim/**
+!fish/**
+
+!.gitignore
