@@ -7,6 +7,7 @@
 :set softtabstop=2
 :set mouse=a
 
+" NOTE: more plugins are installed using Packer, check CWD/lua/plugins.lua
 call plug#begin()
 Plug 'https://github.com/tpope/vim-surround' " vim shortcuts for surrounding text with quotes, etc..
 Plug 'vim-airline/vim-airline'  " vim statusbar
