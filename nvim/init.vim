@@ -27,6 +27,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }  " fuzzy finder for vim, sea
 Plug 'junegunn/fzf.vim'
 Plug 'Mofiqul/dracula.nvim'  " theme for nvim
 Plug 'dense-analysis/ale'  " linting for nvim
+Plug 'https://github.com/tpope/vim-fugitive' " git plugin
 call plug#end()
 
 
@@ -64,6 +65,10 @@ let g:airline_symbols.linenr = ''
 " airline theme
 let g:airline_theme='onedark'
 
+" airline git integration
+let g:airline#extensions#hunks#enabled=0
+let g:airline#extensions#branch#enabled=1
+
 " highlighting theme settings
 syntax enable
 colorscheme dracula
@@ -80,19 +85,27 @@ let g:bullets_enabled_file_types = [
     \ 'scratch'
     \]
 
-" dashboard settings
-" let g:dashboard_default_executive = 'fzf'
-" :lua require('dashboard-nvim-configs')
 
 " fzf settings
 nnoremap <silent> <C-p> :Files<CR>
 nnoremap <silent> <C-f> :Rg<CR>
 command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
-
-" nvim-tree settings
-" :lua require('nvim-tree-configs')
-
+" barbar settings
+nnoremap <silent>    <A-,> <Cmd>BufferPrevious<CR>
+nnoremap <silent>    <A-.> <Cmd>BufferNext<CR>
+nnoremap <silent>    <A-1> <Cmd>BufferGoto 1<CR>
+nnoremap <silent>    <A-2> <Cmd>BufferGoto 2<CR>
+nnoremap <silent>    <A-3> <Cmd>BufferGoto 3<CR>
+nnoremap <silent>    <A-4> <Cmd>BufferGoto 4<CR>
+nnoremap <silent>    <A-5> <Cmd>BufferGoto 5<CR>
+nnoremap <silent>    <A-6> <Cmd>BufferGoto 6<CR>
+nnoremap <silent>    <A-7> <Cmd>BufferGoto 7<CR>
+nnoremap <silent>    <A-8> <Cmd>BufferGoto 8<CR>
+nnoremap <silent>    <A-9> <Cmd>BufferGoto 9<CR>
+nnoremap <silent>    <A-0> <Cmd>BufferLast<CR>
+nnoremap <silent>    <A-p> <Cmd>BufferPin<CR>
+nnoremap <silent>    <A-c> <Cmd>BufferClose<CR>
 
 " lua require('plugins')
 :lua require('init')

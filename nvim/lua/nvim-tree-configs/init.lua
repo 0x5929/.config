@@ -11,5 +11,8 @@ require("nvim-tree").setup()
 
 -- keybindings
 vim.cmd('nnoremap <silent> <space>e :NvimTreeToggle<CR>')
+vim.cmd('nnoremap <silent> <space>. :NvimTreeResize +10<CR>')
+vim.cmd('nnoremap <silent> <space>, :NvimTreeResize -10<CR>')
+vim.cmd('nnoremap <silent> <space>f :NvimTreeFocus')
 
 
