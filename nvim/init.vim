@@ -15,6 +15,8 @@ Plug 'vim-airline/vim-airline'  " vim statusbar
 Plug 'vim-airline/vim-airline-themes'
 Plug 'nvim-tree/nvim-web-devicons' " icons for directory tree
 Plug 'nvim-tree/nvim-tree.lua'	" directory tree
+" Plug 'https://github.com/glepnir/dashboard-nvim' " dashboard, here bc Packer has trouble updating plugin? 
+Plug 'mhinz/vim-startify'  " start screen, works with dashboard 
 Plug 'https://github.com/tpope/vim-commentary' " code comments
 Plug 'https://github.com/ap/vim-css-color' " preview css color while editting
 Plug 'https://github.com/rafi/awesome-vim-colorschemes' " syntax highting
@@ -108,6 +110,55 @@ nnoremap <silent>    <A-9> <Cmd>BufferGoto 9<CR>
 nnoremap <silent>    <A-0> <Cmd>BufferLast<CR>
 nnoremap <silent>    <A-p> <Cmd>BufferPin<CR>
 nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
+
+" startify settings
+nnoremap <A-s> <Cmd>SSave<CR>
+let g:startify_session_persistence=1
+let g:startify_session_autoload=1
+
+let g:startify_lists = [
+  \ { 'type': 'commands',  'header': ['   Commands']       },
+  \ { 'type': 'sessions',  'header': ['   Sessions']       },
+  \ { 'type': 'files',     'header': ['   MRU']            }
+  \ ]
+
+let g:startify_commands = [
+\ ['Vim Reference', 'h ref'],
+\ ['Find Files By Path', ':Files'],
+\ ['Find Files By Content', ':Rg'],
+\ ]
+
+let g:startify_custom_header = startify#center([
+  \'                 ▄████████▄         ',
+  \'               ▄█▀▒▒▒▒▒▒▒▀██▄       ',
+  \'           ▄█▀▒▒▒▒▒▒▄▒▒▒▒▒▒▐█▌      ',
+  \'         ▄█▒▒▒▒▒▒▒▒▒▒▀█▒▒▒▄██       ',
+  \'       ▄█▒▒▒▒▒▒▒▒▒▒▒▒▒▒██▀▒▒▒█▄     ',
+  \'     ▄█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▄   ',
+  \'     ▄█▒▒▒▄██████▄▒▒▒▒▄█████▄▒▒▒▒█  ',
+  \'     █▒▒▒█▀░░░░░▀█ ▒▒▒█▀░░░░▀█▒▒▒█  ',
+  \'     █▒▒▒█░░▄░░░░▀████▀░░░▄░░█▒▒▒█  ',
+  \'   ▄███▄▒█▄░▐▀▄░░░░░░░░░▄▀▌░▄█▒▒███▄',
+  \'   █▀░░█▄▒█░▐▐▀▀▄▄▄ ▄▄▄▀▀▌▌░█▒▒█░░▀█',
+  \'   █░░░░█▒█░▐▐  ▄▄ █ ▄▄  ▌▌░█▒█░░░░█',
+  \'   █░▄░░█▒█░▐▐▄ ▀▀ █ ▀▀ ▄▌▌░█▒█░░▄░█',
+  \'   █░░█░█▒█░░▌▄█▄▄▀ ▀▄▄█▄▐░░█▒█░█░░█',
+  \'   █▄░█████████▀░░▀▄▀░░▀█████████░▄█',
+  \'   ██▀░░▄▀░░▀░░▀▄░░░▄▀░░▀░░▀▄░░▀██  ',
+  \'   ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██',
+  \'   █░▄░░░░░░░░░░░░░░░░░░░░░░░░░░░▄░█',
+  \'   █░▀█▄░░░░░░░░░░░░░░░░░░░░░░░▄█▀░█',
+  \'   █░░█▀███████████████████████▀█░░█',
+  \'   █░░█    █   █   █   █   █    █░░█',
+  \'   █░░░▀█▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄█▀░░░█',
+  \'   ▀█░░▀█▄█    █   █   █   █▄█▀░░░█▀  ',
+  \'    ▀█░░░▀▀█▄▄ █   █   █▄▄█▀▀░░░░█▀  ',
+  \'     ▀█░░░░░▀▀█████████▀▀░░░░░░█▀    ',
+  \'      ▀█░░░░░░░▄░░░░░░░▄░░░░░░█▀    ',
+  \'        ▀██▄░░░▀▀▀▀▀▀▀▀▀░░░▄██▀      ',
+  \'          ▀██▄▄░░░░░░░▄▄██▀        ',
+  \'             ▀▀███████▀▀            ',
+\])
 
 " lua require('plugins')
 :lua require('init')
