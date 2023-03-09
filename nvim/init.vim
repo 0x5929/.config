@@ -115,11 +115,14 @@ nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
 nnoremap <A-s> <Cmd>SSave<CR>
 let g:startify_session_persistence=1
 let g:startify_session_autoload=1
+let g:startify_session_before_save = [ 'tabdo NvimTreeClose' ]
+let g:startify_padding_left = 50
+let g:startify_custom_indices = ['h', 'f', 'g']
 
 let g:startify_lists = [
-  \ { 'type': 'commands',  'header': ['   Commands']       },
-  \ { 'type': 'sessions',  'header': ['   Sessions']       },
-  \ { 'type': 'files',     'header': ['   MRU']            }
+  \ { 'type': 'commands',  'header': startify#center(['   Commands'])       },
+  \ { 'type': 'sessions',  'header': startify#center(['   Sessions'])       },
+  \ { 'type': 'files',     'header': startify#center(['   Recent Files'])            }
   \ ]
 
 let g:startify_commands = [
@@ -159,6 +162,7 @@ let g:startify_custom_header = startify#center([
   \'          ▀██▄▄░░░░░░░▄▄██▀        ',
   \'             ▀▀███████▀▀            ',
 \])
+
 
 " lua require('plugins')
 :lua require('init')

@@ -3,7 +3,13 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
 	use 'wbthomason/packer.nvim'
 
-
+	-- use {
+	--     'goolord/alpha-nvim',
+	--     requires = { 'nvim-tree/nvim-web-devicons' },
+	--     config = function ()
+	-- 	require'alpha'.setup(require'alpha.themes.startify'.config)
+	--     end
+	-- }
   -- Dashboard plugins: dasbhoard-nvim and alpha
 	-- use {
 	--   'glepnir/dashboard-nvim',
