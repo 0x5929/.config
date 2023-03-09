@@ -6,6 +6,7 @@
 :set smarttab
 :set softtabstop=2
 :set mouse=a
+:hi MsgArea guifg=#44fcfc
 
 " NOTE: more plugins are installed using Packer, check CWD/lua/plugins.lua
 call plug#begin()
@@ -87,8 +88,9 @@ let g:bullets_enabled_file_types = [
 
 
 " fzf settings
-nnoremap <silent> <C-p> :Files<CR>
-nnoremap <silent> <C-f> :Rg<CR>
+nnoremap <silent> <C-e> :Files<CR>
+nnoremap <silent> <C-A-f> :Rg<CR>
+nnoremap <C-f> /
 command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 " barbar settings
@@ -105,7 +107,7 @@ nnoremap <silent>    <A-8> <Cmd>BufferGoto 8<CR>
 nnoremap <silent>    <A-9> <Cmd>BufferGoto 9<CR>
 nnoremap <silent>    <A-0> <Cmd>BufferLast<CR>
 nnoremap <silent>    <A-p> <Cmd>BufferPin<CR>
-nnoremap <silent>    <A-c> <Cmd>BufferClose<CR>
+nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
 
 " lua require('plugins')
 :lua require('init')
