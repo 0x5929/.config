@@ -88,6 +88,29 @@ let g:bullets_enabled_file_types = [
     \ 'scratch'
     \]
 
+" custom split screen settings
+:set splitbelow splitright
+:set fillchars+=vert:\
+
+" select screens
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" resize screens
+nnoremap <C-Left> :vertical resize +3<CR>
+nnoremap <C-Right> :vertical resize -3<CR>
+nnoremap <C-Up> :resize +3<CR>
+nnoremap <C-Down> :resize -3<CR>
+
+" flip orientation
+map <Leader>th <C-w>t<C-w>H
+map <Leader>tk <C-w>t<C-w>K
+
+" allow for terminal split
+nnoremap <Leader>tt :vnew term://fish<CR>
+
 
 " fzf settings
 nnoremap <silent> <C-e> :Files<CR>
@@ -111,7 +134,14 @@ nnoremap <silent>    <A-0> <Cmd>BufferLast<CR>
 nnoremap <silent>    <A-p> <Cmd>BufferPin<CR>
 nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
 
-" startify settings
+
+" fugitive git settings
+nnoremap <leader>g :Gvdiffsplit!<CR>
+nnoremap <leader>gw :Gwrite<CR>
+nnoremap <leader>g, :diffget //2<CR>
+nnoremap <leader>g. :diffget //3<CR>
+
+" startify dashboard settings
 nnoremap <A-s> <Cmd>SSave<CR>
 let g:startify_session_persistence=1
 let g:startify_session_autoload=1
@@ -164,5 +194,4 @@ let g:startify_custom_header = startify#center([
 \])
 
 
-" lua require('plugins')
 :lua require('init')
