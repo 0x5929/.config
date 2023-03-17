@@ -9,11 +9,14 @@ import qualified XMonad.StackSet as W           -- defines workspaces, windows a
 
 
 -- Actions
+
+import XMonad.Actions.CopyWindow (kill1)                                                              -- needed to kill windows in workspaces
 import XMonad.Actions.CycleWS (Direction1D(..), moveTo, shiftTo, WSType(..), nextScreen, prevScreen)    -- workspace management
 import XMonad.Actions.GridSelect                                                                        -- enable gridselect programs or apps
 import XMonad.Actions.MouseResize                                                                       -- allows windows to be resized by mouse
 import XMonad.Actions.Promote                                                                           -- focus on master window
 import XMonad.Actions.RotSlaves (rotSlavesDown, rotAllDown)                                             -- rotate windows that arent master
+import XMonad.Actions.WindowGo (runOrRaise)
 import XMonad.Actions.WithAll (sinkAll, killAll)                                                        -- multi action with all windows
 import qualified XMonad.Actions.Search as S                                                             -- enable search with browser straight from WM
 
@@ -29,7 +32,7 @@ import Data.Maybe (isJust)
 
 
 -- Hooks
-import XMonad.Hooks.DynamicLog  (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten)-- wrapper for StatusBar and Statusbar.PP hooks 
+import XMonad.Hooks.DynamicLog  (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))-- wrapper for StatusBar and Statusbar.PP hooks 
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks, ToggleStruts(..))         -- allow windows respect docks like xmobar
@@ -142,7 +145,13 @@ myFocusColor  = color15     -- This variable is imported from Colors.THEME
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = True
+myFocusFollowsMouse = False
+
+
+
+-- counting windows 
+windowCount :: X (Maybe String)
+windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 
 
@@ -355,13 +364,6 @@ tall     = renamed [Replace "tall"]
            $ subLayout [] (smartBorders Simplest)
            $ mySpacing 8
            $ ResizableTall 1 (3/100) (1/2) []
-magnify  = renamed [Replace "magnify"]
-           $ windowNavigation
-           $ addTabs shrinkText myTabTheme
-           $ subLayout [] (smartBorders Simplest)
-           $ magnifier
-           $ limitWindows 12
-           $ ResizableTall 1 (3/100) (1/2) []
 monocle  = renamed [Replace "monocle"]
            $ smartBorders
            $ windowNavigation
@@ -451,7 +453,6 @@ myLayoutHook = avoidStruts
   where
     myDefaultLayout = withBorder myBorderWidth tall
                                            ||| noBorders monocle
-                                           ||| magnify
                                            ||| floats
                                            ||| noBorders tabs
                                            ||| grid
@@ -561,11 +562,11 @@ myKeys c =
   subKeys "Xmonad Essentials"
   [ ("M-C-r", addName "Recompile XMonad"       $ spawn "xmonad --recompile")
   , ("M-S-r", addName "Restart XMonad"         $ spawn "xmonad --restart")
-  , ("M-S-q", addName "Quit XMonad"            $ sequence_ [spawn (mySoundPlayer ++ shutdownSound), io exitSuccess])
+  , ("M-S-q", addName "Quit XMonad"            $ io exitSuccess)
   --, ("M-S-q", addName "Quit XMonad"            $ spawn "dm-logout")
   , ("M-S-c", addName "Kill focused window"    $ kill1)
   , ("M-S-a", addName "Kill all windows on WS" $ killAll)
-  , ("M-S-<Return>", addName "Run prompt"      $ sequence_ [spawn (mySoundPlayer ++ dmenuSound), spawn "~/.local/bin/dm-run"])
+  , ("M-S-<Return>", addName "Run prompt"      $ spawn "dmenu_run")
   , ("M-S-b", addName "Toggle bar show/hide"   $ sendMessage ToggleStruts)]
  -- not needed, for ArchLinux DT's post installation script help , ("M-/", addName "DTOS Help"                $ spawn "~/.local/bin/dtos-help")]
 
@@ -730,7 +731,8 @@ myKeys c =
 
   -- Appending search engine prompts to keybindings list.
   -- Look at "search engines" section of this config for values for "k".
-  ++ [("M-S-s " ++ k, S.selectSearch f) | (k,f) <- searchList ]
+ --   need to figure how to get this running
+ --  ++ [("M-S-s " ++ k, S.selectSearch f) | (k,f) <- searchList ]
   -- The following lines are needed for named scratchpads.
     where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
           nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
@@ -743,11 +745,15 @@ myKeys c =
 main :: IO ()
 main = do
 
+
+  -- xmproc0 <- spawnPipe ("xmobar $HOME/.config/xmobar/xmobarrc")
   -- the xmonad, ya know...what the WM is named after!
-  xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ docks . ewmh $ def
+  xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmh $ docks $ def
     { manageHook         = myManageHook <+> manageDocks
-    , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty"  <||> className =? "st-256color" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
+    , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Gnome-terminal"  <||> className =? "st-256color" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
     , modMask            = myModMask
+    
+    , focusFollowsMouse  = myFocusFollowsMouse
     , terminal           = myTerminal
     , startupHook        = myStartupHook
     , layoutHook         = showWName' myShowWNameTheme $ myLayoutHook
@@ -756,5 +762,19 @@ main = do
     , normalBorderColor  = myNormColor
     , focusedBorderColor = myFocusColor
     }
+    -- , logHook =  myLogHook <+> dynamicLogWithPP xmobarPP
+    --                 { ppOutput = \x -> hPutStrLn xmproc0 x  
+    --                 , ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]" -- Current workspace in xmobar
+    --                 , ppVisible = xmobarColor "#c3e88d" ""                -- Visible but not current workspace
+    --                 , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
+    --                 , ppHiddenNoWindows = xmobarColor "#F07178" ""        -- Hidden workspaces (no windows)
+    --                 , ppTitle = xmobarColor "#d0d0d0" "" . shorten 60     -- Title of active window in xmobar
+    --                 , ppSep =  "<fc=#666666> | </fc>"                     -- Separators in xmobar
+    --                 , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
+    --                 , ppExtras  = [windowCount]                           -- # of windows current workspace
+    --                 , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
+    --                 }
+    -- } `additionalKeysP` myKeys
+
 
 
