@@ -5,5 +5,7 @@
 !omf/**
 !nvim/**
 !fish/**
+!xmonad/**
+!xmobar/**
 
 !.gitignore
