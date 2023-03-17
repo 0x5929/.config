@@ -135,3 +135,6 @@ export POSTGRES_DATABASE_USERNAME=kevin
 export POSTGRES_DATABASE_PASSWORD=jordan45
 export GMAIL_APP_USER='first.object.oriented@gmail.com'
 export GMAIL_APP_PW=xnnyalrrkjazhmbl
+
+# running ramfetch as greeting
+ramfetch

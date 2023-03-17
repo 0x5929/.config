@@ -115,7 +115,7 @@ nnoremap <Leader>tt :vnew term://fish<CR>
 " fzf settings
 nnoremap <silent> <C-e> :Files<CR>
 nnoremap <silent> <C-A-f> :Rg<CR>
-nnoremap <C-f> /
+nnoremap <C-f> /\c
 command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 " barbar settings

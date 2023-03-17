@@ -1,3 +1,3 @@
 function fish_greeting
-	ramfetch
+	colorscript random
 end

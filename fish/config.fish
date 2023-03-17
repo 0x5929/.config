@@ -4,6 +4,7 @@ if status is-interactive
     set -gx EDITOR nvim
   
     # aliases
+    alias vim=nvim
     alias update='sudo apt update; sudo apt list --upgradable'
     alias upgrade='sudo apt upgrade -y'
     alias pcode='cd /home/kevin/Dev/'
