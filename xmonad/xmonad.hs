@@ -15,7 +15,7 @@ import XMonad.Actions.MouseResize                                               
 import XMonad.Actions.Promote                                                                           -- focus on master window
 import XMonad.Actions.RotSlaves (rotSlavesDown, rotAllDown)                                             -- rotate windows that arent master
 import XMonad.Actions.WithAll (sinkAll, killAll)                                                        -- multi action with all windows
--- import qualified XMonad.Actions.Search as S                                                             -- enable search with browser straight from WM
+import qualified XMonad.Actions.Search as S                                                             -- enable search with browser straight from WM
 
 -- Data
 import Data.Monoid
@@ -29,7 +29,7 @@ import Data.Maybe (isJust)
 
 
 -- Hooks
-import XMonad.Hooks.DynamicLog(dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))-- wrapper for StatusBar and Statusbar.PP hooks 
+import XMonad.Hooks.DynamicLog  (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten)-- wrapper for StatusBar and Statusbar.PP hooks 
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks, ToggleStruts(..))         -- allow windows respect docks like xmobar
@@ -49,7 +49,6 @@ import XMonad.Layout.Spiral
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ThreeColumns
-import XMonad.Layout.Magnifier
 
 
 -- Layout modifiers
@@ -150,15 +149,17 @@ myFocusFollowsMouse = True
 -- Applications to start with xmonad
 myStartupHook :: X ()
 myStartupHook = do
-  spawnOnce "lxsession"     -- allows for X sessions
-  spawnOnce "picom"         -- X compositor, handles transparency and other animation
-  spawnOnce "nm-applet"     -- network manager applet, shows status
-  spawnOnce "indicator-sound"    -- could potentailly cause issues
-  spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStruct true --expand true --monitor primary --transparent true --alpha 0 --tint 0x282c34 --height 22"
+   spawnOnce "lxsession &"     -- allows for X sessions
+   spawnOnce "nitrogen --restore &"  -- draws background image
+   spawnOnce "picom &"           -- X compositor, handles transparency and other animation
+   spawnOnce "nm-applet &"          -- network manager applet, shows status
+   spawnOnce "indicator-sound &"    -- could potentailly cause issues
+   spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStruct true --expand true --monitor primary --transparent true --alpha 0 --tint 0x282c34 --height 22 &"
+
+   setWMName "LG3D"
 
 
-  spawnOnce "nitrogen --restore"   -- wallpaper, needs to be set the first time
-  setWMName "LG3D"
+
 
 
 -- -- GRIDSELECT SETTINGS
@@ -241,10 +242,10 @@ gsCategories =
 
 -- grid select, secondary menus
 gsGames =
-  [ ("Steam", "steam"), ]
+  [ ("Steam", "steam") ]
 
 gsEducation =
-  [ ("Scratch", "scratch"), ]
+  [ ("Scratch", "scratch") ]
 
 gsInternet = 
   [ ("Discord", "discord")
@@ -279,14 +280,14 @@ gsSettings =
 gsSystem =
   [ 
   -- ("Alacritty", "alacritty")
-  , ("Bash", (myTerminal ++ " -- bash"))
+   ("Bash", (myTerminal ++ " -- bash"))
   , ("Htop", (myTerminal ++ " -- htop"))
   , ("Fish", (myTerminal ++ " -- fish"))
   , ("Fish", (myTerminal ++ " -- conky"))
   ]
 
-gsUtilities =
-  , ("Nitrogen", "nitrogen")
+gsUtilities = [
+   ("Nitrogen", "nitrogen")
   , ("Vim", (myTerminal ++ " -e vim"))
   ]
 
@@ -473,7 +474,7 @@ myLogHook = fadeInactiveLogHook fadeAmount
 -- Xmonad has several search engines available to use located in
 -- XMonad.Actions.Search. Additionally, you can add other search engines
 -- such as those listed below.
-archwiki, ebay, news, reddit, urban :: S.SearchEngine
+-- archwiki, ebay, news, reddit, urban :: S.SearchEngine
 
 -- archwiki = S.searchEngine "archwiki" "https://wiki.archlinux.org/index.php?search="
 -- ebay     = S.searchEngine "ebay" "https://www.ebay.com/sch/i.html?_nkw="
@@ -565,7 +566,7 @@ myKeys c =
   , ("M-S-c", addName "Kill focused window"    $ kill1)
   , ("M-S-a", addName "Kill all windows on WS" $ killAll)
   , ("M-S-<Return>", addName "Run prompt"      $ sequence_ [spawn (mySoundPlayer ++ dmenuSound), spawn "~/.local/bin/dm-run"])
-  , ("M-S-b", addName "Toggle bar show/hide"   $ sendMessage ToggleStruts)
+  , ("M-S-b", addName "Toggle bar show/hide"   $ sendMessage ToggleStruts)]
  -- not needed, for ArchLinux DT's post installation script help , ("M-/", addName "DTOS Help"                $ spawn "~/.local/bin/dtos-help")]
 
   ^++^ subKeys "Switch to workspace"
@@ -729,10 +730,7 @@ myKeys c =
 
   -- Appending search engine prompts to keybindings list.
   -- Look at "search engines" section of this config for values for "k".
-  ++ [("M-s " ++ k, S.promptSearch dtXPConfig' f) | (k,f) <- searchList ]
   ++ [("M-S-s " ++ k, S.selectSearch f) | (k,f) <- searchList ]
-
-
   -- The following lines are needed for named scratchpads.
     where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
           nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
@@ -745,11 +743,10 @@ myKeys c =
 main :: IO ()
 main = do
 
-   xmproc0 <- spawnPipe "xmobar $HOME/.config/xmobar/xmobarrc"
   -- the xmonad, ya know...what the WM is named after!
   xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ docks . ewmh $ def
     { manageHook         = myManageHook <+> manageDocks
-    , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty"  <||> className =? "Gnome-terminal" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
+    , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty"  <||> className =? "st-256color" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
     , modMask            = myModMask
     , terminal           = myTerminal
     , startupHook        = myStartupHook
@@ -758,18 +755,6 @@ main = do
     , borderWidth        = myBorderWidth
     , normalBorderColor  = myNormColor
     , focusedBorderColor = myFocusColor
-    , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
-                    { ppOutput = \x -> hPutStrLn xmproc0 x  >> hPutStrLn xmproc1 x  >> hPutStrLn xmproc2 x
-                    , ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]" -- Current workspace in xmobar
-                    , ppVisible = xmobarColor "#c3e88d" ""                -- Visible but not current workspace
-                    , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
-                    , ppHiddenNoWindows = xmobarColor "#F07178" ""        -- Hidden workspaces (no windows)
-                    , ppTitle = xmobarColor "#d0d0d0" "" . shorten 60     -- Title of active window in xmobar
-                    , ppSep =  "<fc=#666666> | </fc>"                     -- Separators in xmobar
-                    , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
-                    , ppExtras  = [windowCount]                           -- # of windows current workspace
-                    , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
-                    }
-    } `additionalKeysP` myKeys
- 
+    }
+
 
