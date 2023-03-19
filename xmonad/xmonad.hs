@@ -168,10 +168,10 @@ myStartupHook = do
    spawnOnce "pnmixer"           -- sound mix applet
    -- spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStruct true --expand true --monitor primary --transparent true --alpha 0 --tint 0x282c34 --height 22"
 
-   -- spawn "sleep 2 && killall pcmanfm"
+   -- spawn "sleep 2 && killall pcmanfm" -- this kills desktop manager, and no mouse will be avail
    spawn "sleep 2 && killall lxpanel"
    -- wallpapers for dual monitors, comment out if having trouble
-   spawn "sleep 2 && xwallpaper --output DP-1-1.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-1.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
+   spawn "sleep 3 && xwallpaper --output DP-1-1.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-1.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
    spawn ("sleep 2 && trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor primary --transparent true --alpha 0 " ++ colorTrayer ++ " --height 22")
 
 
