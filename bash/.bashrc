@@ -139,5 +139,5 @@ export GMAIL_APP_PW=xnnyalrrkjazhmbl
 # running ramfetch as greeting
 ramfetch
 
-# running commands to adjust home monitor setup
-xrandr --output DP-1-1.2 --primary --mode 3840x1080 --rate 59.97 --output DP-1-1.3 --mode 1920x1080 --rate 59.94 --rotate left --right-of DP-1-1.2
+# running commands to adjust home monitor setup, done elsewhere now, with x?
+# xrandr --output DP-1-1.2 --primary --mode 3840x1080 --rate 59.97 --output DP-1-1.3 --mode 1920x1080 --rate 59.94 --rotate left --right-of DP-1-1.2

@@ -24,15 +24,15 @@ import qualified XMonad.Actions.Search as S                                     
 import Data.Monoid
 import qualified Data.Map        as M
 import Data.Char (toUpper) 
+import Data.Maybe (fromJust)
 import Data.Maybe (isJust)
 
 -- not sure if the modules below are needed, uncomment as see fit
--- import Data.Maybe (fromJust)
 -- import Data.Tree
 
 
 -- Hooks
-import XMonad.Hooks.DynamicLog  (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))-- wrapper for StatusBar and Statusbar.PP hooks 
+-- import XMonad.Hooks.DynamicLog  (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))-- wrapper for StatusBar and Statusbar.PP hooks 
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks, ToggleStruts(..))         -- allow windows respect docks like xmobar
@@ -42,6 +42,7 @@ import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat, doCenterFloat)    
 import XMonad.Hooks.WindowSwallowing                                                        -- handles event hooks
 import XMonad.Hooks.SetWMName                                                               -- allows setting window manager name
 import XMonad.Hooks.FadeInactive
+import XMonad.Hooks.WorkspaceHistory                                                        -- gives history of workspace navigations
 
 
 -- Layouts
@@ -158,13 +159,24 @@ windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace
 -- Applications to start with xmonad
 myStartupHook :: X ()
 myStartupHook = do
-   spawnOnce "lxsession &"     -- allows for X sessions
-   spawnOnce "nitrogen --restore &"  -- draws background image
-   spawnOnce "picom &"           -- X compositor, handles transparency and other animation
-   spawnOnce "nm-applet &"          -- network manager applet, shows status
-   spawnOnce "indicator-sound &"    -- could potentailly cause issues
-   spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStruct true --expand true --monitor primary --transparent true --alpha 0 --tint 0x282c34 --height 22 &"
+   -- making sure current LXDE File manager doesnt set wallpaper and make sure panels not there
+   spawn "killall trayer"  -- kill current trayer on each restart
+   
+   spawnOnce "lxsession"     -- allows for X11 sessions
+   spawnOnce "picom"           -- X compositor, handles transparency and other animation
+   spawnOnce "nm-applet"          -- network manager applet, shows status
+   spawnOnce "pnmixer"           -- sound mix applet
+   -- spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStruct true --expand true --monitor primary --transparent true --alpha 0 --tint 0x282c34 --height 22"
 
+   -- spawn "sleep 2 && killall pcmanfm"
+   spawn "sleep 2 && killall lxpanel"
+   -- wallpapers for dual monitors, comment out if having trouble
+   spawn "sleep 2 && xwallpaper --output DP-1-1.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-1.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
+   spawn ("sleep 2 && trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor primary --transparent true --alpha 0 " ++ colorTrayer ++ " --height 22")
+
+
+   -- uncomment if using nitrogen to do backgrounds instead
+   -- spawnOnce "nitrogen --restore &"
    setWMName "LG3D"
 
 
@@ -296,7 +308,7 @@ gsSystem =
   ]
 
 gsUtilities = [
-   ("Nitrogen", "nitrogen")
+   ("Calculator", "gnome-calculator")
   , ("Vim", (myTerminal ++ " -e vim"))
   ]
 
@@ -505,6 +517,11 @@ searchList = [ ("d", S.duckduckgo)
 -- can configure by commenting out the second line, after seeing what workspace is really for what
 myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- myWorkspaces = ["1: dev", "2: www", "3: sys", "4: doc", "5: vbox", "6: chat", "7: mus", "8: vid", "9: gfx"]
+
+myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
+
+clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
+    where i = fromJust $ M.lookup ws myWorkspaceIndices
 
 
 -- ManageHook settings: Window rules:
@@ -739,6 +756,10 @@ myKeys c =
 
 
 
+-- StatusBar (xmobar, provided by StatusBar and StatusBar.PP
+-- used by property logging where the status bar such as xmobar needs to pick up at the root window
+mySB = statusBarProp "xmobar" (pure xmobarPP)
+
 ------------------------------------------------------------------------
 -- Now run xmonad with all the settings we set up.
 
@@ -746,9 +767,11 @@ main :: IO ()
 main = do
 
 
-  -- xmproc0 <- spawnPipe ("xmobar $HOME/.config/xmobar/xmobarrc")
+  -- xmproc0 <- spawnPipe ("xmobar ~/.config/xmobar/xmobarrc")
+  
   -- the xmonad, ya know...what the WM is named after!
-  xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmh $ docks $ def
+  -- xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmh $ docks $ def
+  xmonad . addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys . withSB mySB . ewmh . docks $ def
     { manageHook         = myManageHook <+> manageDocks
     , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Gnome-terminal"  <||> className =? "st-256color" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
     , modMask            = myModMask
@@ -761,20 +784,29 @@ main = do
     , borderWidth        = myBorderWidth
     , normalBorderColor  = myNormColor
     , focusedBorderColor = myFocusColor
-    }
-    -- , logHook =  myLogHook <+> dynamicLogWithPP xmobarPP
-    --                 { ppOutput = \x -> hPutStrLn xmproc0 x  
-    --                 , ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]" -- Current workspace in xmobar
-    --                 , ppVisible = xmobarColor "#c3e88d" ""                -- Visible but not current workspace
-    --                 , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
-    --                 , ppHiddenNoWindows = xmobarColor "#F07178" ""        -- Hidden workspaces (no windows)
-    --                 , ppTitle = xmobarColor "#d0d0d0" "" . shorten 60     -- Title of active window in xmobar
-    --                 , ppSep =  "<fc=#666666> | </fc>"                     -- Separators in xmobar
-    --                 , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
-    --                 , ppExtras  = [windowCount]                           -- # of windows current workspace
-    --                 , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
-    --                 }
-    -- } `additionalKeysP` myKeys
+    -- , logHook = dynamicLogWithPP $  filterOutWsPP [scratchpadWorkspaceTag] $ xmobarPP
+    --     { ppOutput = \x -> hPutStrLn xmproc0 x   -- xmobar on monitor 1
+    --     , ppCurrent = xmobarColor color06 "" . wrap
+    --                   ("<box type=Bottom width=2 mb=2 color=" ++ color06 ++ ">") "</box>"
+    --       -- Visible but not current workspace
+    --     , ppVisible = xmobarColor color06 "" . clickable
+    --       -- Hidden workspace
+    --     , ppHidden = xmobarColor color05 "" . wrap
+    --                  ("<box type=Top width=2 mt=2 color=" ++ color05 ++ ">") "</box>" . clickable
+    --       -- Hidden workspaces (no windows)
+    --     , ppHiddenNoWindows = xmobarColor color05 ""  . clickable
+    --       -- Title of active window
+    --     , ppTitle = xmobarColor color16 "" . shorten 60
+    --       -- Separator character
+    --     , ppSep =  "<fc=" ++ color09 ++ "> <fn=1>|</fn> </fc>"
+    --       -- Urgent workspace
+    --     , ppUrgent = xmobarColor color02 "" . wrap "!" "!"
+    --       -- Adding # of windows on current workspace to the bar
+    --     , ppExtras  = [windowCount]
+    --       -- order of things in xmobar
+    --     , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
+    --     }
+     }
 
 
 

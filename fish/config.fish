@@ -23,6 +23,6 @@ if status is-interactive
     # fish_vi_key_bindings
     fish_default_key_bindings
 
-    # set up for home dual monitor
-    xrandr --output DP-1-1.2 --primary --mode 3840x1080 --rate 59.97 --output DP-1-1.3 --mode 1920x1080 --rate 59.94 --rotate left --right-of DP-1-1.2
+    # set up for home dual monitor, done with x now?
+    # xrandr --output DP-1-1.2 --primary --mode 3840x1080 --rate 59.97 --output DP-1-1.3 --mode 1920x1080 --rate 59.94 --rotate left --right-of DP-1-1.2
 end
