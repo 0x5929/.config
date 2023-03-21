@@ -114,7 +114,7 @@ myModMask = mod4Mask        -- modkey to super/windows key
 
 -- set terminal
 myTerminal :: String
-myTerminal = "gnome-terminal"
+myTerminal = "alacritty"
 
 
 -- set browser
@@ -773,7 +773,7 @@ main = do
   -- xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmh $ docks $ def
   xmonad . addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys . withSB mySB . ewmh . docks $ def
     { manageHook         = myManageHook <+> manageDocks
-    , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Gnome-terminal"  <||> className =? "st-256color" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
+    , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty"  <||> className =? "Gnome-terminal" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
     , modMask            = myModMask
     
     , focusFollowsMouse  = myFocusFollowsMouse

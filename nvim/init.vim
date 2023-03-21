@@ -6,6 +6,8 @@
 :set smarttab
 :set softtabstop=2
 :set mouse=a
+
+" set command message area text color
 :hi MsgArea guifg=#44fcfc
 
 " NOTE: more plugins are installed using Packer, check CWD/lua/plugins.lua

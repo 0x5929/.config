@@ -1,4 +1,10 @@
-require('mini.map').setup()
+local map = require('mini.map')
+require('mini.map').setup({
+  symbols = {
+    encode = map.gen_encode_symbols.dot('3x2')
+
+  }
+})
 
 -- autostart
 -- auto open

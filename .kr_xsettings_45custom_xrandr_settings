@@ -1,0 +1,10 @@
+# dual monitor setup, 49" ultrawide and 24" portrait mode right side
+# Ubuntu users need to link this document to the following location
+# /etc/X11/Xsession.d/45custom_xrandr-settings
+# by: ln -s <this-file> /etc/X11/Xsession.d/45custom_xrandr-settings
+# need to also check for more than one monitor, if not dont do anything
+monitors=$(xrandr -q | grep -w connected | wc -l)
+
+if [ $monitors == 3 ]; then
+	xrandr --output DP-1-1.2 --primary --mode 3840x1080 --rate 59.97 --output DP-1-1.3 --mode 1920x1080 --rate 59.94 --rotate left --right-of DP-1-1.2
+fi

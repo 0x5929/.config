@@ -8,4 +8,5 @@
 !xmonad/**
 !xmobar/**
 
+!.kr_xsettings_45custom_xrandr_settings
 !.gitignore
