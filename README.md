@@ -1,4 +1,4 @@
-# Personal Config files for important apps
+# Personal Config files for important appss
 
 ### Please see .gitinore file to see which apps are tracked
 
