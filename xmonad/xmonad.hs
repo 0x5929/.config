@@ -53,6 +53,8 @@ import XMonad.Layout.Spiral
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ThreeColumns
+import XMonad.Layout.CenteredMaster
+import XMonad.Layout.CenteredIfSingle
 
 
 -- Layout modifiers
@@ -172,7 +174,7 @@ myStartupHook = do
    spawn "sleep 2 && killall lxpanel"
    -- wallpapers for dual monitors, comment out if having trouble
    spawn "sleep 3 && xwallpaper --output DP-1-1.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-1.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
-   spawn ("sleep 2 && trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor primary --transparent true --alpha 0 " ++ colorTrayer ++ " --height 22")
+   spawn ("sleep 2 && trayer --edge top --align right --widthtype request --padding 5 --SetDockType true --SetPartialStrut true --expand true --monitor primary --transparent true --alpha 255 --tint 0x000000 " ++ colorTrayer ++ " --height 22")
 
 
    -- uncomment if using nitrogen to do backgrounds instead
@@ -394,6 +396,12 @@ grid     = renamed [Replace "grid"]
            $ mySpacing 8
            $ mkToggle (single MIRROR)
            $ Grid (16/10)
+centered = renamed [Replace "centerMaster"]
+           $ smartBorders
+           $ centerMaster grid
+centeredSingle = renamed [Replace "centeredIfSingle"]
+           $ smartBorders
+           $ centeredIfSingle 0.7 0.8 grid
 spirals  = renamed [Replace "spirals"]
            $ limitWindows 9
            $ smartBorders
@@ -463,16 +471,18 @@ myLayoutHook = avoidStruts
                $ T.toggleLayouts floats
                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
   where
-    myDefaultLayout = withBorder myBorderWidth tall
-                                           ||| noBorders monocle
-                                           ||| floats
-                                           ||| noBorders tabs
-                                           ||| grid
-                                           ||| spirals
-                                           ||| threeCol
-                                           ||| threeRow
-                                           ||| tallAccordion
-                                           ||| wideAccordion
+    myDefaultLayout =  centeredSingle
+                       ||| withBorder myBorderWidth tall
+                       ||| noBorders monocle
+                       ||| floats
+                       ||| noBorders tabs
+                       ||| grid
+                       ||| spirals
+                       ||| threeCol
+                       ||| threeRow
+                       ||| tallAccordion
+                       ||| wideAccordion
+                       ||| centered
 
 
 
@@ -749,7 +759,9 @@ myKeys c =
   -- Appending search engine prompts to keybindings list.
   -- Look at "search engines" section of this config for values for "k".
  --   need to figure how to get this running
- --  ++ [("M-S-s " ++ k, S.selectSearch f) | (k,f) <- searchList ]
+  -- ++ [("M-S-s " ++ k, S.selectSearch f) | (k,f) <- searchList ]
+  -- ++ [("M-s " ++ k, S.promptSearch dtXPConfig' f) | (k,f) <- searchList ]
+ 
   -- The following lines are needed for named scratchpads.
     where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
           nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))

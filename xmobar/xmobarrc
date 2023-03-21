@@ -5,11 +5,11 @@ Config { font = "Ubuntu Bold 9"
 													 , "Font Awesome 6 Free Solid 12"
 													 , "Font Awesome 6 Brands 12"
 			 ]
-       , bgColor = "#282a36"
+       , bgColor = "black"
        , fgColor = "#f8f8f2"
        -- , borderColor = "black"
        -- , border = TopB
-       -- , alpha = 255
+       , alpha = 255
 			 , position       = TopSize L 100 24
        -- , textOffset = -1
        -- , iconOffset = -1
