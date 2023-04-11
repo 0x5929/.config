@@ -133,7 +133,7 @@ myTerminal = "alacritty"
 
 -- set browser
 myBrowser :: String
-myBrowser = "google-chrome" 
+myBrowser = "qutebrowser" 
 
 -- set editor
 myEditor :: String
@@ -188,8 +188,8 @@ myStartupHook = do
    -- spawn "sleep 2 && killall pcmanfm" -- this kills desktop manager, and no mouse will be avail
    spawn "sleep 2 && killall lxpanel"
    -- wallpapers for dual monitors, comment out if having trouble
-   spawn "sleep 3 && xwallpaper --output DP-1-1.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-1.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
-   spawn ("sleep 2 && trayer --edge top --align right --widthtype request --padding 5 --SetDockType true --SetPartialStrut true --expand true --monitor primary --transparent true --alpha 255 --tint 0x000000 " ++ colorTrayer ++ " --height 22")
+   spawn "sleep 3 && xwallpaper --output DP-1-0.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-0.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
+   spawn ("sleep 2 && trayer --edge top --align right --widthtype request --padding 4 --SetDockType true --SetPartialStrut true --expand true --monitor primary --transparent true --alpha 255 --tint 0x000000 " ++ colorTrayer ++ " --height 22")
 
 
    -- uncomment if using nitrogen to do backgrounds instead
@@ -289,6 +289,7 @@ gsInternet =
   [ ("Discord", "discord")
   , ("Firefox", "firefox")
   , ("Chrome", "google-chrome")
+  , ("Qutebrowser", "qutebrowser")
   ]
 
 gsMultimedia =
