@@ -781,8 +781,8 @@ myKeys c =
   ^++^ subKeys "Favorite programs"
   [ ("M-<Return>", addName "Launch terminal"   $ spawn (myTerminal))
   , ("M-b", addName "Launch web browser"       $ spawn (myBrowser))
-  , ("M-M1-h", addName "Launch htop"           $ spawn (myTerminal ++ " -e htop"))]
-
+  , ("M-M1-h", addName "Launch htop"           $ spawn (myTerminal ++ " -e htop"))
+  , ("M-M1-f", addName "Launch vifm"           $ spawn (myTerminal ++ " -e vifm"))]
   ^++^ subKeys "Monitors"
   [ ("M-.", addName "Switch focus to next monitor" $ nextScreen)
   , ("M-,", addName "Switch focus to prev monitor" $ prevScreen)]
