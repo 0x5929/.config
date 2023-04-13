@@ -17,8 +17,8 @@ Plug 'vim-airline/vim-airline'  " vim statusbar
 Plug 'vim-airline/vim-airline-themes'
 Plug 'nvim-tree/nvim-web-devicons' " icons for directory tree
 Plug 'nvim-tree/nvim-tree.lua'	" directory tree
-" Plug 'https://github.com/glepnir/dashboard-nvim' " dashboard, here bc Packer has trouble updating plugin? 
-Plug 'mhinz/vim-startify'  " start screen, works with dashboard 
+" Plug 'https://github.com/glepnir/dashboard-nvim' " dashboard, here bc Packer has trouble updating plugin?
+Plug 'mhinz/vim-startify'  " start screen, works with dashboard
 Plug 'https://github.com/tpope/vim-commentary' " code comments
 Plug 'https://github.com/ap/vim-css-color' " preview css color while editting
 Plug 'https://github.com/rafi/awesome-vim-colorschemes' " syntax highting
@@ -33,8 +33,26 @@ Plug 'junegunn/fzf.vim'
 Plug 'Mofiqul/dracula.nvim'  " theme for nvim
 Plug 'dense-analysis/ale'  " linting for nvim
 Plug 'https://github.com/tpope/vim-fugitive' " git plugin
+Plug 'mattn/emmet-vim'        " emmet
 call plug#end()
 
+
+" emmet settings
+let g:user_emmet_mode = 'a'
+
+" ale/eslint settings
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['prettier', 'eslint'],
+\}
+
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_sign_error = '❌'
+let g:ale_sign_warning = '⚠️'
+let g:ale_fix_on_save = 1
+let g:ale_lint_on_text_changed = 1
 
 " airline settings
 " air-line
@@ -80,7 +98,7 @@ colorscheme dracula
 
 if (has("termguicolors"))
   set termguicolors
-endif 
+endif
 
 " bulletes.vim settings
 let g:bullets_enabled_file_types = [

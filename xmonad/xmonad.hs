@@ -716,7 +716,7 @@ myKeys c =
   --, ("M-S-q", addName "Quit XMonad"            $ spawn "dm-logout")
   , ("M-S-c", addName "Kill focused window"    $ kill1)
   , ("M-S-a", addName "Kill all windows on WS" $ killAll)
-  , ("M-S-<Return>", addName "Run prompt"      $ spawn "dmenu_run")
+  , ("M-S-<Return>", addName "Run prompt"      $ spawn "dmenu_run -bw 3 -c -l 20 -h 24")
   , ("M-S-b", addName "Toggle bar show/hide"   $ sendMessage ToggleStruts)]
  -- not needed, for ArchLinux DT's post installation script help , ("M-/", addName "DTOS Help"                $ spawn "~/.local/bin/dtos-help")]
 
