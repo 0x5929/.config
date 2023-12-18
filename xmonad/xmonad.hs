@@ -23,7 +23,7 @@ import qualified XMonad.Actions.Search as S                                     
 -- Data
 import Data.Monoid
 import qualified Data.Map        as M
-import Data.Char (toUpper) 
+import Data.Char (toUpper)
 import Data.Maybe (fromJust)
 import Data.Maybe (isJust)
 import Data.Char (isSpace)
@@ -34,7 +34,7 @@ import Data.Char (isSpace)
 
 
 -- Hooks
--- import XMonad.Hooks.DynamicLog  (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))-- wrapper for StatusBar and Statusbar.PP hooks 
+-- import XMonad.Hooks.DynamicLog  (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))-- wrapper for StatusBar and Statusbar.PP hooks
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks, ToggleStruts(..))         -- allow windows respect docks like xmobar
@@ -133,7 +133,7 @@ myTerminal = "alacritty"
 
 -- set browser
 myBrowser :: String
-myBrowser = "qutebrowser" 
+myBrowser = "qutebrowser"
 
 -- set editor
 myEditor :: String
@@ -150,11 +150,11 @@ myBorderWidth   = 2
 
 
 -- Border color of normal windows
-myNormColor :: String    
+myNormColor :: String
 myNormColor   = colorBack   -- This variable is imported from Colors.THEME
 
 -- Border color of focused windows
-myFocusColor :: String    
+myFocusColor :: String
 myFocusColor  = color15     -- This variable is imported from Colors.THEME
 
 
@@ -167,7 +167,7 @@ altMask :: KeyMask
 altMask = mod1Mask         -- Setting this for use in xprompts
 
 
--- counting windows 
+-- counting windows
 windowCount :: X (Maybe String)
 windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
@@ -178,7 +178,7 @@ myStartupHook :: X ()
 myStartupHook = do
    -- making sure current LXDE File manager doesnt set wallpaper and make sure panels not there
    spawn "killall trayer"  -- kill current trayer on each restart
-   
+
    spawnOnce "lxsession"     -- allows for X11 sessions
    spawnOnce "picom"           -- X compositor, handles transparency and other animation
    spawnOnce "nm-applet"          -- network manager applet, shows status
@@ -188,7 +188,7 @@ myStartupHook = do
    -- spawn "sleep 2 && killall pcmanfm" -- this kills desktop manager, and no mouse will be avail
    spawn "sleep 2 && killall lxpanel"
    -- wallpapers for dual monitors, comment out if having trouble
-   spawn "sleep 3 && xwallpaper --output DP-1-0.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-0.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
+   spawn "sleep 3 && xwallpaper --output DP-1-1.2 --stretch /usr/share/backgrounds/earth.jpg --output DP-1-1.3 --center /usr/share/backgrounds/earth.jpg"  -- draws background image
    spawn ("sleep 2 && trayer --edge top --align right --widthtype request --padding 4 --SetDockType true --SetPartialStrut true --expand true --monitor primary --transparent true --alpha 255 --tint 0x000000 " ++ colorTrayer ++ " --height 22")
 
 
@@ -285,7 +285,7 @@ gsGames =
 gsEducation =
   [ ("Scratch", "scratch") ]
 
-gsInternet = 
+gsInternet =
   [ ("Discord", "discord")
   , ("Firefox", "firefox")
   , ("Chrome", "google-chrome")
@@ -317,7 +317,7 @@ gsSettings =
   ]
 
 gsSystem =
-  [ 
+  [
   -- ("Alacritty", "alacritty")
    ("Bash", (myTerminal ++ " -- bash"))
   , ("Htop", (myTerminal ++ " -- htop"))
@@ -569,6 +569,13 @@ threeCol = renamed [Replace "threeCol"]
            $ addTabs shrinkText myTabTheme
            $ subLayout [] (smartBorders Simplest)
            $ ThreeCol 1 (3/100) (1/2)
+threeColMid = renamed [Replace "threeColMid"]
+           $ limitWindows 7
+           $ smartBorders
+           $ windowNavigation
+           $ addTabs shrinkText myTabTheme
+           $ subLayout [] (smartBorders Simplest)
+           $ ThreeColMid 1 (3/100) (1/2)
 threeRow = renamed [Replace "threeRow"]
            $ limitWindows 7
            $ smartBorders
@@ -631,6 +638,7 @@ myLayoutHook = avoidStruts
                        ||| grid
                        ||| spirals
                        ||| threeCol
+                       ||| threeColMid
                        ||| threeRow
                        ||| tallAccordion
                        ||| wideAccordion
@@ -680,7 +688,7 @@ myManageHook = composeAll
     , className =? "Conky"             --> doFloat
     , className =? "Postman"           --> doShift ( myWorkspaces !! 2 ) -- always send postman to workspace 2
     , resource  =? "desktop_window"    --> doIgnore
-    , resource  =? "kdesktop"          --> doIgnore 
+    , resource  =? "kdesktop"          --> doIgnore
     , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
     , (className =? "Google-chrome" <&&> resource =? "Dialog") --> doFloat  -- Float Chrome Dialog
     , isFullscreen -->  doFullFloat
@@ -882,7 +890,7 @@ myKeys c =
 
   -- ^++^ [("M-s-" ++ k, addName "promptSearch"  $ S.promptSearch dtXPConfig' f ) | (k,f) <- searchList ]
   ^++^ subKeys "prompSearch"
-  [("M-s g", addName "promptSearch google"  $ S.promptSearch dtXPConfig' S.google) 
+  [("M-s g", addName "promptSearch google"  $ S.promptSearch dtXPConfig' S.google)
   ,("M-S-s g", addName "selectSearch google" $ S.selectSearch S.google)
   ]
   -- Appending search engine prompts to keybindings list.
@@ -890,7 +898,7 @@ myKeys c =
  --   need to figure how to get this running
   -- ++ [("M-S-s " ++ k, S.selectSearch f) | (k,f) <- searchList ]
   -- ++ [("M-s " ++ k, S.promptSearch dtXPConfig' f) | (k,f) <- searchList ]
- 
+
   -- The following lines are needed for named scratchpads.
     where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
           nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "NSP"))
@@ -909,14 +917,14 @@ main = do
 
 
   -- xmproc0 <- spawnPipe ("xmobar ~/.config/xmobar/xmobarrc")
-  
+
   -- the xmonad, ya know...what the WM is named after!
   -- xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmh $ docks $ def
   xmonad . addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys . withSB mySB . ewmh . docks $ def
     { manageHook         = myManageHook <+> manageDocks
     , handleEventHook    = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty"  <||> className =? "Gnome-terminal" <||> className =? "XTerm") (return True) <> trayerPaddingXmobarEventHook
     , modMask            = myModMask
-    
+
     , focusFollowsMouse  = myFocusFollowsMouse
     , terminal           = myTerminal
     , startupHook        = myStartupHook
@@ -948,6 +956,3 @@ main = do
     --     , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
     --     }
      }
-
-
-
